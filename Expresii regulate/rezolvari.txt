@@ -1,0 +1,20 @@
+Exercitiul 1
+Regex:
+(0?[1-9]|[12][0-9]|3[01])(\.|\/)(0?[1-9]|1[012])(\.|\/)([0-9]{4}|[0-9]{2})
+Exemple: 
+30/01/2024
+30.1.20
+01.12/23
+
+Exercitiul 2
+Mihai,vine 123/x.
+Alex,asteapta 7/a/b.
+Vlad,pleaca 99?
+
+Exercitiul 3
+Regex:
+(\[)(\^?)((\\[rnt\\])|([^\]\\\-])|([^\]\\]-[^\]\\]))+(\])
+Exemple:
+[^a-z]
+[\ra-s]
+[\\\\]
