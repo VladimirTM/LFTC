@@ -6,13 +6,10 @@
 #include "lexer.h"
 #include "utils.h"
 
-Token *tokens; // single linked list of tokens
-Token *lastTk; // the last token in list
+Token *tokens;
+Token *lastTk;
+int line = 1;
 
-int line = 1; // the current line in the input file
-
-// adds a token to the end of the tokens list and returns it
-// sets its code and line
 Token *addTk(int code)
 {
 	Token *tk = safeAlloc(sizeof(Token));
@@ -33,11 +30,43 @@ Token *addTk(int code)
 
 char *extract(const char *begin, const char *end)
 {
-	int len = end - begin;
+	size_t len = end - begin;
 	char *text = safeAlloc(len + 1);
 	memcpy(text, begin, len);
 	text[len] = '\0';
 	return text;
+}
+
+int getEscapeCharacter(char ch)
+{
+	switch (ch)
+	{
+	case 'a':
+		return '\a';
+	case 'b':
+		return '\b';
+	case 'f':
+		return '\f';
+	case 'n':
+		return '\n';
+	case 'r':
+		return '\r';
+	case 't':
+		return '\t';
+	case 'v':
+		return '\v';
+	case '\\':
+		return '\\';
+	case '\'':
+		return '\'';
+	case '"':
+		return '"';
+	case '0':
+		return '\0';
+	default:
+		err("secventa de escape invalida: \\%c", ch);
+	}
+	return 0;
 }
 
 Token *tokenize(const char *pch)
@@ -52,10 +81,12 @@ Token *tokenize(const char *pch)
 		case '\t':
 			pch++;
 			break;
-		case '\r': // handles different kinds of newlines (Windows: \r\n, Linux: \n, MacOS, OS X: \r or \n)
+		case '\r':
 			if (pch[1] == '\n')
+			{
 				pch++;
-			// fallthrough to \n
+			}
+			// fallthrough
 		case '\n':
 			line++;
 			pch++;
@@ -132,7 +163,7 @@ Token *tokenize(const char *pch)
 			}
 			else
 			{
-				err("invalid char: %c (%d)", *pch, *pch);
+				err("caracter invalid: &");
 			}
 			break;
 		case '|':
@@ -143,7 +174,7 @@ Token *tokenize(const char *pch)
 			}
 			else
 			{
-				err("invalid char: %c (%d)", *pch, *pch);
+				err("caracter invalid: |");
 			}
 			break;
 		case '!':
@@ -194,6 +225,62 @@ Token *tokenize(const char *pch)
 				pch++;
 			}
 			break;
+		case '\'':
+			pch++;
+			char ch;
+			if (*pch == '\\')
+			{
+				pch++;
+				ch = getEscapeCharacter(*pch);
+			}
+			else
+			{
+				ch = *pch;
+			}
+			pch++;
+			if (*pch != '\'')
+			{
+				err("lipsesc ghilimelele simple de inchidere");
+			}
+			tk = addTk(CHAR);
+			tk->c = ch;
+			pch++;
+			break;
+		case '"':
+		{
+			size_t bufferSize = 64, length = 0;
+			char *buffer = safeAlloc(bufferSize);
+			pch++;
+			while (*pch != '"')
+			{
+				if (*pch == '\0')
+				{
+					err("lipsesc ghilimelele duble de inchidere");
+				}
+				char ch;
+				if (*pch == '\\')
+				{
+					pch++;
+					ch = getEscapeCharacter(*pch);
+				}
+				else
+				{
+					ch = *pch;
+				}
+				if (length + 1 >= bufferSize)
+				{
+					bufferSize = bufferSize * 2;
+					buffer = realloc(buffer, bufferSize);
+				}
+				buffer[length++] = ch;
+				pch++;
+			}
+			buffer[length] = '\0';
+			pch++;
+			tk = addTk(STRING);
+			tk->text = buffer;
+			break;
+		}
 		default:
 			if (isalpha(*pch) || *pch == '_')
 			{
@@ -252,8 +339,51 @@ Token *tokenize(const char *pch)
 					tk->text = text;
 				}
 			}
+			else if (isdigit(*pch))
+			{
+				for (start = pch; isdigit(*pch); pch++)
+				{
+				}
+				int isDouble = 0;
+				if (*pch == '.' && isdigit(pch[1]))
+				{
+					isDouble = 1;
+					for (pch++; isdigit(*pch); pch++)
+					{
+					}
+				}
+				if(*pch == 'e' || *pch == 'E')
+				{
+					isDouble = 1;
+					pch++;
+					if(*pch == '+' || *pch == '-')
+					{
+						pch++;
+					}
+					if(!isdigit(*pch))
+					{
+						err("Cifre lipsa dupa exponent");
+					}
+					while(isdigit(*pch))
+					{
+						pch++;
+					}
+				}
+				char *number = extract(start, pch);
+				if(isDouble)
+				{
+					tk = addTk(DOUBLE);
+					tk->d = atof(number);
+				}
+				else
+				{
+					tk = addTk(INT);
+					tk->i = atoi(number);
+				}
+				free(number);
+			}
 			else
-				err("invalid char: %c (%d)", *pch, *pch);
+				err("caracter invalid: %c (%d)", *pch, *pch);
 		}
 	}
 }
@@ -295,9 +425,29 @@ void showTokens(const Token *tokens)
 		"ASSIGN",
 		"EQUAL",
 		"NOTEQ",
-		"LESS", "LESSEQ", "GREATER", "GREATEREQ"};
+		"LESS",
+		"LESSEQ",
+		"GREATER",
+		"GREATEREQ"};
 	for (const Token *tk = tokens; tk; tk = tk->next)
 	{
-		printf("%d\t%s\n", tk->code, names[tk->code]);
+		printf("%d\t%s", tk->line, names[tk->code]);
+		if(tk->code == ID || tk->code == STRING)
+		{
+			printf(":%s", tk->text);
+		}
+		else if(tk->code == INT)
+		{
+			printf(":%d", tk->i);
+		}
+		else if(tk->code == DOUBLE)
+		{
+			printf(":%g", tk->d);
+		}
+		else if(tk->code == CHAR)
+		{
+			printf(":%c", tk->c);
+		}
+		printf("\n");
 	}
 }
