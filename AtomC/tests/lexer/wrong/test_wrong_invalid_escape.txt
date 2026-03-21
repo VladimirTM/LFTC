@@ -1,0 +1,1 @@
+error: secventa de escape invalida: \x
