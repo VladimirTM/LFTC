@@ -347,11 +347,19 @@ Token *tokenize(const char *pch)
 				{
 				}
 				int isDouble = 0;
-				if (*pch == '.' && isdigit(pch[1]))
+				if (*pch == '.')
 				{
-					isDouble = 1;
-					for (pch++; isdigit(*pch); pch++)
+					pch++;
+					if(isdigit(*pch))
 					{
+						isDouble = 1;
+						for (pch++; isdigit(*pch); pch++)
+						{
+						}
+					}
+					else
+					{
+						err("Cifre lipsa dupa punctul zecimal");
 					}
 				}
 				if(*pch == 'e' || *pch == 'E')
@@ -456,7 +464,7 @@ void showTokens(const Token *tokens)
 		}
 		else if(tk->code == DOUBLE)
 		{
-			printf(":%g", tk->d);
+			printf(":%.2f", tk->d);
 		}
 		else if(tk->code == CHAR)
 		{
