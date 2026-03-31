@@ -11,6 +11,8 @@ int main(int argc, char **argv)
     }
     char *source = loadFile(argv[1]);
     Token *tokens = tokenize(source);
+    free(source);
     showTokens(tokens);
+    freeTokens(tokens);
     return 0;
 }

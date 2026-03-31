@@ -62,3 +62,4 @@ typedef struct Token
 
 Token *tokenize(const char *pch);
 void showTokens(const Token *tokens);
+void freeTokens(Token *tokens);

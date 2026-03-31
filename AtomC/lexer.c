@@ -270,7 +270,9 @@ Token *tokenize(const char *pch)
 				if (length + 1 >= bufferSize)
 				{
 					bufferSize = bufferSize * 2;
-					buffer = realloc(buffer, bufferSize);
+					char *tmp = realloc(buffer, bufferSize);
+					if (!tmp) err("not enough memory");
+					buffer = tmp;
 				}
 				buffer[length++] = ch;
 				pch++;
@@ -385,6 +387,18 @@ Token *tokenize(const char *pch)
 			else
 				err("caracter invalid: %c (%d)", *pch, *pch);
 		}
+	}
+}
+
+void freeTokens(Token *tk)
+{
+	while (tk)
+	{
+		Token *next = tk->next;
+		if (tk->code == ID || tk->code == STRING)
+			free(tk->text);
+		free(tk);
+		tk = next;
 	}
 }
 
