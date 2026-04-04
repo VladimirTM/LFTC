@@ -271,7 +271,8 @@ Token *tokenize(const char *pch)
 				{
 					bufferSize = bufferSize * 2;
 					char *tmp = realloc(buffer, bufferSize);
-					if (!tmp) err("not enough memory");
+					if (!tmp)
+						err("not enough memory");
 					buffer = tmp;
 				}
 				buffer[length++] = ch;
@@ -350,7 +351,7 @@ Token *tokenize(const char *pch)
 				if (*pch == '.')
 				{
 					pch++;
-					if(isdigit(*pch))
+					if (isdigit(*pch))
 					{
 						isDouble = 1;
 						for (pch++; isdigit(*pch); pch++)
@@ -362,25 +363,25 @@ Token *tokenize(const char *pch)
 						err("Cifre lipsa dupa punctul zecimal");
 					}
 				}
-				if(*pch == 'e' || *pch == 'E')
+				if (*pch == 'e' || *pch == 'E')
 				{
 					isDouble = 1;
 					pch++;
-					if(*pch == '+' || *pch == '-')
+					if (*pch == '+' || *pch == '-')
 					{
 						pch++;
 					}
-					if(!isdigit(*pch))
+					if (!isdigit(*pch))
 					{
 						err("Cifre lipsa dupa exponent");
 					}
-					while(isdigit(*pch))
+					while (isdigit(*pch))
 					{
 						pch++;
 					}
 				}
 				char *number = extract(start, pch);
-				if(isDouble)
+				if (isDouble)
 				{
 					tk = addTk(DOUBLE);
 					tk->d = atof(number);
@@ -413,63 +414,34 @@ void freeTokens(Token *tk)
 void showTokens(const Token *tokens)
 {
 	static const char *names[] = {
-		"ID",
-		"TYPE_CHAR",
-		"TYPE_DOUBLE",
-		"ELSE",
-		"IF",
-		"TYPE_INT",
-		"RETURN",
-		"STRUCT",
-		"VOID",
-		"WHILE",
-		"INT",
-		"DOUBLE",
-		"CHAR",
-		"STRING",
-		"COMMA",
-		"SEMICOLON",
-		"LPAR",
-		"RPAR",
-		"LBRACKET",
-		"RBRACKET",
-		"LACC",
-		"RACC",
-		"END",
-		"ADD",
-		"SUB",
-		"MUL",
-		"DIV",
-		"DOT",
-		"AND",
-		"OR",
-		"NOT",
-		"ASSIGN",
-		"EQUAL",
-		"NOTEQ",
-		"LESS",
-		"LESSEQ",
-		"GREATER",
-		"GREATEREQ"};
+		"ID", "TYPE_CHAR", "TYPE_DOUBLE", "ELSE", "IF", "TYPE_INT",
+		"RETURN", "STRUCT", "VOID", "WHILE", "INT", "DOUBLE", "CHAR",
+		"STRING", "COMMA", "SEMICOLON", "LPAR", "RPAR", "LBRACKET",
+		"RBRACKET", "LACC", "RACC", "END", "ADD", "SUB", "MUL", "DIV",
+		"DOT", "AND", "OR", "NOT", "ASSIGN", "EQUAL", "NOTEQ", "LESS",
+		"LESSEQ", "GREATER", "GREATEREQ"};
+
+	int currentLine = -1;
 	for (const Token *tk = tokens; tk; tk = tk->next)
 	{
-		printf("%d\t%s", tk->line, names[tk->code]);
-		if(tk->code == ID || tk->code == STRING)
+		if (tk->line != currentLine)
 		{
+			if (currentLine != -1)
+				printf("\n");
+			printf("Line %-3d: ", tk->line);
+			currentLine = tk->line;
+		}
+
+		printf("%s", names[tk->code]);
+		if (tk->code == ID || tk->code == STRING)
 			printf(":%s", tk->text);
-		}
-		else if(tk->code == INT)
-		{
+		else if (tk->code == INT)
 			printf(":%d", tk->i);
-		}
-		else if(tk->code == DOUBLE)
-		{
+		else if (tk->code == DOUBLE)
 			printf(":%.2f", tk->d);
-		}
-		else if(tk->code == CHAR)
-		{
+		else if (tk->code == CHAR)
 			printf(":%c", tk->c);
-		}
-		printf("\n");
+		printf(" ");
 	}
+	printf("\n");
 }
