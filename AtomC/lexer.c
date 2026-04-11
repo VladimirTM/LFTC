@@ -235,12 +235,20 @@ Token *tokenize(const char *pch)
 			}
 			else
 			{
+				if (*pch == '\0')
+				{
+					err("lipseste apostroful de inchidere");
+				}
+				if (*pch == '\'')
+				{
+					err("apostrof fara escape in caracter");
+				}
 				ch = *pch;
 			}
 			pch++;
 			if (*pch != '\'')
 			{
-				err("lipsesc ghilimelele simple de inchidere");
+				err("lipseste apostroful de inchidere");
 			}
 			tk = addTk(CHAR);
 			tk->c = ch;
@@ -255,7 +263,7 @@ Token *tokenize(const char *pch)
 			{
 				if (*pch == '\0')
 				{
-					err("lipsesc ghilimelele duble de inchidere");
+					err("lipseste ghilimeaua de inchidere");
 				}
 				char ch;
 				if (*pch == '\\')
@@ -272,7 +280,7 @@ Token *tokenize(const char *pch)
 					bufferSize = bufferSize * 2;
 					char *tmp = realloc(buffer, bufferSize);
 					if (!tmp)
-						err("not enough memory");
+						err("memorie insuficienta");
 					buffer = tmp;
 				}
 				buffer[length++] = ch;
@@ -348,19 +356,12 @@ Token *tokenize(const char *pch)
 				{
 				}
 				int isDouble = 0;
-				if (*pch == '.')
+				if (*pch == '.' && isdigit(pch[1]))
 				{
 					pch++;
-					if (isdigit(*pch))
+					isDouble = 1;
+					for (pch++; isdigit(*pch); pch++)
 					{
-						isDouble = 1;
-						for (pch++; isdigit(*pch); pch++)
-						{
-						}
-					}
-					else
-					{
-						err("Cifre lipsa dupa punctul zecimal");
 					}
 				}
 				if (*pch == 'e' || *pch == 'E')
@@ -373,7 +374,7 @@ Token *tokenize(const char *pch)
 					}
 					if (!isdigit(*pch))
 					{
-						err("Cifre lipsa dupa exponent");
+						err("cifre lipsa dupa exponent");
 					}
 					while (isdigit(*pch))
 					{
