@@ -1,0 +1,9 @@
+Line 1  : TYPE_INT ID:check LPAR TYPE_INT ID:n RPAR LACC 
+Line 2  : IF LPAR ID:n GREATER INT:0 RPAR LACC 
+Line 3  : RETURN INT:1 SEMICOLON 
+Line 4  : RACC ELSE LACC 
+Line 5  : RETURN INT:0 SEMICOLON 
+Line 6  : RACC 
+Line 7  : RACC 
+Line 8  : END 
+Parsing OK

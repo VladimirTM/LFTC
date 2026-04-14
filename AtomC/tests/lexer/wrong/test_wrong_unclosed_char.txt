@@ -1,1 +1,1 @@
-error: lipsesc ghilimelele simple de inchidere
+error: lipseste apostroful de inchidere

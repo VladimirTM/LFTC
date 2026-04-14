@@ -12,3 +12,4 @@ Line 13 : ID:puts LPAR STRING: RPAR SEMICOLON
 Line 14 : RETURN INT:0 SEMICOLON 
 Line 15 : RACC 
 Line 16 : END 
+Parsing OK

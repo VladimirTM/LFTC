@@ -1,0 +1,9 @@
+Line 1  : VOID ID:count LPAR TYPE_INT ID:n RPAR LACC 
+Line 2  : TYPE_INT ID:i SEMICOLON 
+Line 3  : ID:i ASSIGN INT:0 SEMICOLON 
+Line 4  : WHILE LPAR ID:i LESS ID:n RPAR LACC 
+Line 5  : ID:i ASSIGN ID:i ADD INT:1 SEMICOLON 
+Line 6  : RACC 
+Line 7  : RACC 
+Line 8  : END 
+Parsing OK

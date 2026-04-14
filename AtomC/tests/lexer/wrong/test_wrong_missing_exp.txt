@@ -1,1 +1,1 @@
-error: Cifre lipsa dupa exponent
+error: cifre lipsa dupa exponent

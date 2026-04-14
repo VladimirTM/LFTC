@@ -1,0 +1,5 @@
+Line 1  : TYPE_INT ID:x SEMICOLON 
+Line 2  : TYPE_DOUBLE ID:y SEMICOLON 
+Line 3  : TYPE_CHAR ID:z SEMICOLON 
+Line 4  : END 
+Parsing OK

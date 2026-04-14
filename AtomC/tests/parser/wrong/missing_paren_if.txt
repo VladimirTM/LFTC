@@ -1,0 +1,7 @@
+Line 1  : VOID ID:foo LPAR RPAR LACC 
+Line 2  : IF INT:1 LACC 
+Line 3  : RETURN SEMICOLON 
+Line 4  : RACC 
+Line 5  : RACC 
+Line 6  : END 
+error in line 2: lipseste ( dupa if

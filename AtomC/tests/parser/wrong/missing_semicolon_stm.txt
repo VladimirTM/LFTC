@@ -1,0 +1,6 @@
+Line 1  : VOID ID:foo LPAR RPAR LACC 
+Line 2  : TYPE_INT ID:x SEMICOLON 
+Line 3  : ID:x ASSIGN INT:1 
+Line 4  : RACC 
+Line 5  : END 
+error in line 4: lipseste ; dupa expresie

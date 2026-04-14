@@ -1,0 +1,3 @@
+Line 1  : TYPE_INT ID:x 
+Line 2  : END 
+error in line 2: lipseste ; dupa declaratia de variabila

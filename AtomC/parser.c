@@ -91,12 +91,11 @@ bool structDef()
 					if (consume(SEMICOLON)) return true;
 					tkerr("lipseste ; dupa }");
 				}
-				else
-				{
-					tkerr("lipseste } la sfarsitul structurii");
-				}
+				tkerr("lipseste } la sfarsitul structurii");
 			}
+			tkerr("lipseste { dupa numele structurii");
 		}
+		tkerr("lipseste numele structurii dupa struct");
 	}
 	iTk = start;
 	return false;
@@ -146,7 +145,7 @@ bool fnDef()
 {
 	Token *start = iTk;
 	bool hasType = false;
-	if (typeBase())        hasType = true;
+	if (typeBase())         hasType = true;
 	else if (consume(VOID)) hasType = true;
 
 	if (hasType)
@@ -167,10 +166,7 @@ bool fnDef()
 					if (stmCompound()) return true;
 					tkerr("lipseste corpul functiei");
 				}
-				else
-				{
-					tkerr("lipseste ) dupa parametrii functiei");
-				}
+				tkerr("lipseste ) dupa parametrii functiei");
 			}
 		}
 	}
@@ -189,7 +185,7 @@ bool unit()
 		else break;
 	}
 	if (consume(END)) return true;
-	tkerr("eroare de sintaxa");
+	tkerr("token neasteptat: se astepta un tip, struct, void sau sfarsit de fisier");
 	return false;
 }
 
@@ -231,11 +227,10 @@ bool exprPrimary()
 	return false;
 }
 
-// exprPostfix:
-//   exprPostfix: exprPrimary exprPostfixPrim
-//   exprPostfixPrim: LBRACKET expr RBRACKET exprPostfixPrim
-//                  | DOT ID exprPostfixPrim
-//                  | ε
+// exprPostfix: exprPrimary exprPostfixPrim
+// exprPostfixPrim: LBRACKET expr RBRACKET exprPostfixPrim
+//                | DOT ID exprPostfixPrim
+//                | ε
 bool exprPostfixPrim()
 {
 	if (consume(LBRACKET))
@@ -296,6 +291,7 @@ bool exprCast()
 				if (exprCast()) return true;
 				tkerr("expresie invalida dupa cast");
 			}
+			tkerr("lipseste ) dupa tipul conversiei");
 		}
 	}
 	iTk = start;
@@ -303,9 +299,8 @@ bool exprCast()
 	return false;
 }
 
-// exprMul:
-//   exprMul: exprCast exprMulPrim
-//   exprMulPrim: ( MUL | DIV ) exprCast exprMulPrim | ε
+// exprMul: exprCast exprMulPrim
+// exprMulPrim: ( MUL | DIV ) exprCast exprMulPrim | ε
 bool exprMulPrim()
 {
 	if (consume(MUL) || consume(DIV))
@@ -331,9 +326,8 @@ bool exprMul()
 	return false;
 }
 
-// exprAdd:
-//   exprAdd: exprMul exprAddPrim
-//   exprAddPrim: ( ADD | SUB ) exprMul exprAddPrim | ε
+// exprAdd: exprMul exprAddPrim
+// exprAddPrim: ( ADD | SUB ) exprMul exprAddPrim | ε
 bool exprAddPrim()
 {
 	if (consume(ADD) || consume(SUB))
@@ -359,9 +353,8 @@ bool exprAdd()
 	return false;
 }
 
-// exprRel:
-//   exprRel: exprAdd exprRelPrim
-//   exprRelPrim: ( LESS | LESSEQ | GREATER | GREATEREQ ) exprAdd exprRelPrim | ε
+// exprRel: exprAdd exprRelPrim
+// exprRelPrim: ( LESS | LESSEQ | GREATER | GREATEREQ ) exprAdd exprRelPrim | ε
 bool exprRelPrim()
 {
 	if (consume(LESS) || consume(LESSEQ) || consume(GREATER) || consume(GREATEREQ))
@@ -387,9 +380,8 @@ bool exprRel()
 	return false;
 }
 
-// exprEq:
-//   exprEq: exprRel exprEqPrim
-//   exprEqPrim: ( EQUAL | NOTEQ ) exprRel exprEqPrim | ε
+// exprEq: exprRel exprEqPrim
+// exprEqPrim: ( EQUAL | NOTEQ ) exprRel exprEqPrim | ε
 bool exprEqPrim()
 {
 	if (consume(EQUAL) || consume(NOTEQ))
@@ -415,9 +407,8 @@ bool exprEq()
 	return false;
 }
 
-// exprAnd:
-//   exprAnd: exprEq exprAndPrim
-//   exprAndPrim: AND exprEq exprAndPrim | ε
+// exprAnd: exprEq exprAndPrim
+// exprAndPrim: AND exprEq exprAndPrim | ε
 bool exprAndPrim()
 {
 	if (consume(AND))
@@ -443,9 +434,8 @@ bool exprAnd()
 	return false;
 }
 
-// exprOr:
-//   exprOr: exprAnd exprOrPrim
-//   exprOrPrim: OR exprAnd exprOrPrim | ε
+// exprOr: exprAnd exprOrPrim
+// exprOrPrim: OR exprAnd exprOrPrim | ε
 bool exprOrPrim()
 {
 	if (consume(OR))
@@ -508,7 +498,7 @@ bool stm()
 	if (consume(IF))
 	{
 		if (!consume(LPAR)) tkerr("lipseste ( dupa if");
-		if (!expr())        tkerr("conditie invalida in if sau lipseste )");
+		if (!expr())        tkerr("conditie invalida in if");
 		if (!consume(RPAR)) tkerr("lipseste ) dupa conditia if");
 		if (!stm())         tkerr("instructiune invalida dupa if");
 		if (consume(ELSE))
@@ -521,7 +511,7 @@ bool stm()
 	if (consume(WHILE))
 	{
 		if (!consume(LPAR)) tkerr("lipseste ( dupa while");
-		if (!expr())        tkerr("conditie invalida in while sau lipseste )");
+		if (!expr())        tkerr("conditie invalida in while");
 		if (!consume(RPAR)) tkerr("lipseste ) dupa conditia while");
 		if (!stm())         tkerr("instructiune invalida dupa while");
 		return true;

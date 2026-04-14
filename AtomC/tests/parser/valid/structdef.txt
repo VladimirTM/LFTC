@@ -1,0 +1,6 @@
+Line 1  : STRUCT ID:Point LACC 
+Line 2  : TYPE_INT ID:x SEMICOLON 
+Line 3  : TYPE_INT ID:y SEMICOLON 
+Line 4  : RACC SEMICOLON 
+Line 5  : END 
+Parsing OK

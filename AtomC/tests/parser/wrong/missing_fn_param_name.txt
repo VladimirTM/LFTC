@@ -1,0 +1,5 @@
+Line 1  : VOID ID:foo LPAR TYPE_INT RPAR LACC 
+Line 2  : RETURN SEMICOLON 
+Line 3  : RACC 
+Line 4  : END 
+error in line 1: lipseste numele parametrului
