@@ -50,7 +50,7 @@ bool arrayDecl()
 	Token *start = iTk;
 	if (consume(LBRACKET))
 	{
-		consume(INT); // optional
+		if(consume(INT)) {}
 		if (consume(RBRACKET)) return true;
 		tkerr("lipseste ] in declaratia de array");
 	}
@@ -93,7 +93,8 @@ bool structDef()
 				}
 				tkerr("lipseste } la sfarsitul structurii");
 			}
-			tkerr("lipseste { dupa numele structurii");
+			iTk = start;
+			return false;
 		}
 		tkerr("lipseste numele structurii dupa struct");
 	}
@@ -220,8 +221,6 @@ bool exprPrimary()
 			if (consume(RPAR)) return true;
 			tkerr("lipseste ) dupa expresie");
 		}
-		iTk = start;
-		return false;
 	}
 	iTk = start;
 	return false;
@@ -519,7 +518,7 @@ bool stm()
 
 	if (consume(RETURN))
 	{
-		expr(); // optional
+		if(expr()) {}
 		if (!consume(SEMICOLON)) tkerr("lipseste ; dupa return");
 		return true;
 	}
