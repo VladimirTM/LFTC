@@ -159,7 +159,7 @@ bool fnDef()
 				{
 					while (consume(COMMA))
 					{
-						if (!fnParam()) tkerr("parametru invalid dupa ,");
+						if (!fnParam()) tkerr("parametru invalid sau lipseste dupa ,");
 					}
 				}
 				if (consume(RPAR))
@@ -266,10 +266,13 @@ bool exprPostfix()
 bool exprUnary()
 {
 	Token *start = iTk;
-	if (consume(SUB) || consume(NOT))
+	const char *unaryOp = NULL;
+	if (consume(SUB)) unaryOp = "-";
+	else if (consume(NOT)) unaryOp = "!";
+	if (unaryOp)
 	{
 		if (exprUnary()) return true;
-		tkerr("expresie invalida dupa operator unar");
+		tkerr("expresie invalida dupa operatorul unar '%s'", unaryOp);
 	}
 	if (exprPostfix()) return true;
 	iTk = start;
@@ -302,14 +305,17 @@ bool exprCast()
 // exprMulPrim: ( MUL | DIV ) exprCast exprMulPrim | ε
 bool exprMulPrim()
 {
-	if (consume(MUL) || consume(DIV))
+	const char *mulOp = NULL;
+	if (consume(MUL)) mulOp = "*";
+	else if (consume(DIV)) mulOp = "/";
+	if (mulOp)
 	{
 		if (exprCast())
 		{
 			exprMulPrim();
 			return true;
 		}
-		tkerr("expresie invalida dupa * sau /");
+		tkerr("expresie invalida dupa operatorul '%s'", mulOp);
 	}
 	return true; // ε
 }
@@ -329,14 +335,17 @@ bool exprMul()
 // exprAddPrim: ( ADD | SUB ) exprMul exprAddPrim | ε
 bool exprAddPrim()
 {
-	if (consume(ADD) || consume(SUB))
+	const char *addOp = NULL;
+	if (consume(ADD)) addOp = "+";
+	else if (consume(SUB)) addOp = "-";
+	if (addOp)
 	{
 		if (exprMul())
 		{
 			exprAddPrim();
 			return true;
 		}
-		tkerr("expresie invalida dupa + sau -");
+		tkerr("expresie invalida dupa operatorul '%s'", addOp);
 	}
 	return true; // ε
 }
@@ -356,14 +365,19 @@ bool exprAdd()
 // exprRelPrim: ( LESS | LESSEQ | GREATER | GREATEREQ ) exprAdd exprRelPrim | ε
 bool exprRelPrim()
 {
-	if (consume(LESS) || consume(LESSEQ) || consume(GREATER) || consume(GREATEREQ))
+	const char *relOp = NULL;
+	if (consume(LESS)) relOp = "<";
+	else if (consume(LESSEQ)) relOp = "<=";
+	else if (consume(GREATER)) relOp = ">";
+	else if (consume(GREATEREQ)) relOp = ">=";
+	if (relOp)
 	{
 		if (exprAdd())
 		{
 			exprRelPrim();
 			return true;
 		}
-		tkerr("expresie invalida dupa operator relational");
+		tkerr("expresie invalida dupa operatorul relational '%s'", relOp);
 	}
 	return true; // ε
 }
@@ -383,14 +397,17 @@ bool exprRel()
 // exprEqPrim: ( EQUAL | NOTEQ ) exprRel exprEqPrim | ε
 bool exprEqPrim()
 {
-	if (consume(EQUAL) || consume(NOTEQ))
+	const char *eqOp = NULL;
+	if (consume(EQUAL)) eqOp = "==";
+	else if (consume(NOTEQ)) eqOp = "!=";
+	if (eqOp)
 	{
 		if (exprRel())
 		{
 			exprEqPrim();
 			return true;
 		}
-		tkerr("expresie invalida dupa == sau !=");
+		tkerr("expresie invalida dupa operatorul '%s'", eqOp);
 	}
 	return true; // ε
 }
