@@ -12,4 +12,11 @@ Line 11 : RACC
 Line 12 : RETURN ID:r SEMICOLON 
 Line 13 : RACC 
 Line 14 : END 
-Parsing OK
+
+// domain: global
+int calc(int a /*size=4, idx=0*/, int b /*size=4, idx=1*/){
+	int r;	// size=4, idx=0
+	}
+
+
+Parsare OK

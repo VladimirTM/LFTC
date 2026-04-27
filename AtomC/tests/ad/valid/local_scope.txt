@@ -1,0 +1,16 @@
+Line 1  : VOID ID:f LPAR RPAR LACC 
+Line 2  : TYPE_INT ID:x SEMICOLON 
+Line 3  : LACC 
+Line 4  : TYPE_INT ID:x SEMICOLON 
+Line 5  : RACC 
+Line 6  : RACC 
+Line 7  : END 
+
+// domain: global
+void f(){
+	int x;	// size=4, idx=0
+	int x;	// size=4, idx=1
+	}
+
+
+Parsare OK

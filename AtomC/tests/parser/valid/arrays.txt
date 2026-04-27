@@ -8,4 +8,14 @@ Line 8  : ID:arr LBRACKET INT:1 RBRACKET ASSIGN ID:arr LBRACKET INT:0 RBRACKET A
 Line 9  : RETURN ID:arr LBRACKET INT:0 RBRACKET ADD ID:arr LBRACKET INT:1 RBRACKET SEMICOLON 
 Line 10 : RACC 
 Line 11 : END 
-Parsing OK
+
+// domain: global
+struct Node{
+	int val;	// size=4, idx=0
+	};	// size=4
+int sum(int n /*size=4, idx=0*/){
+	int arr[10];	// size=40, idx=0
+	}
+
+
+Parsare OK

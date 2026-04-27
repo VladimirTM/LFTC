@@ -1,0 +1,5 @@
+Line 1  : TYPE_INT ID:x SEMICOLON 
+Line 2  : TYPE_INT ID:x SEMICOLON 
+Line 3  : END 
+
+eroare la linia 3: redefinirea simbolului: x

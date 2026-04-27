@@ -16,7 +16,9 @@ run_test() {
         actual=$("$BINARY" "$input" 2>/dev/null)
     fi
 
-    expected_content=$(cat "$expected")
+    normalize() { sed 's/mem=0x[0-9a-f]*/mem=?/g'; }
+    actual=$(echo "$actual" | normalize)
+    expected_content=$(cat "$expected" | normalize)
 
     if [ "$actual" = "$expected_content" ]; then
         echo "  PASS: $name"
@@ -49,6 +51,8 @@ run_suite "Lexer valid"  ./tests/lexer/valid  "0"
 run_suite "Lexer wrong"  ./tests/lexer/wrong  "1"
 run_suite "Parser valid" ./tests/parser/valid "0"
 run_suite "Parser wrong" ./tests/parser/wrong "1"
+run_suite "AD valid"     ./tests/ad/valid     "0"
+run_suite "AD wrong"     ./tests/ad/wrong     "1"
 
 echo "Results: $PASS passed, $FAIL failed"
 [ $FAIL -eq 0 ] && exit 0 || exit 1

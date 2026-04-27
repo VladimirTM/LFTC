@@ -1,1 +1,1 @@
-error: lipseste apostroful de inchidere
+eroare: lipseste apostroful de inchidere

@@ -6,7 +6,7 @@
 
 void err(const char *fmt, ...)
 {
-	fprintf(stderr, "error: ");
+	fprintf(stderr, "eroare: ");
 	va_list va;
 	va_start(va, fmt);
 	vfprintf(stderr, fmt, va);
@@ -19,7 +19,7 @@ void *safeAlloc(size_t nBytes)
 {
 	void *p = malloc(nBytes);
 	if (!p)
-		err("not enough memory");
+		err("memorie insuficienta");
 	return p;
 }
 
@@ -27,7 +27,7 @@ char *loadFile(const char *fileName)
 {
 	FILE *fis = fopen(fileName, "rb");
 	if (!fis)
-		err("unable to open %s", fileName);
+		err("imposibil de deschis %s", fileName);
 	fseek(fis, 0, SEEK_END);
 	size_t n = (size_t)ftell(fis);
 	fseek(fis, 0, SEEK_SET);
@@ -35,7 +35,7 @@ char *loadFile(const char *fileName)
 	size_t nRead = fread(buf, sizeof(char), (size_t)n, fis);
 	fclose(fis);
 	if (n != nRead)
-		err("cannot read all the content of %s", fileName);
+		err("nu s-a putut citi tot continutul fisierului %s", fileName);
 	buf[n] = '\0';
 	return buf;
 }

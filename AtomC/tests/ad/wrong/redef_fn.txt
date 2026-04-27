@@ -1,0 +1,7 @@
+Line 1  : VOID ID:f LPAR RPAR LACC 
+Line 2  : RACC 
+Line 3  : VOID ID:f LPAR RPAR LACC 
+Line 4  : RACC 
+Line 5  : END 
+
+eroare la linia 3: redefinirea simbolului: f

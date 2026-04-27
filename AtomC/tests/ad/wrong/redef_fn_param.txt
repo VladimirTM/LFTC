@@ -1,0 +1,5 @@
+Line 1  : VOID ID:f LPAR TYPE_INT ID:a COMMA TYPE_INT ID:a RPAR LACC 
+Line 2  : RACC 
+Line 3  : END 
+
+eroare la linia 1: redefinirea simbolului: a

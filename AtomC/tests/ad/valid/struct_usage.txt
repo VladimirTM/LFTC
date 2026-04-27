@@ -2,13 +2,15 @@ Line 1  : STRUCT ID:Point LACC
 Line 2  : TYPE_INT ID:x SEMICOLON 
 Line 3  : TYPE_INT ID:y SEMICOLON 
 Line 4  : RACC SEMICOLON 
-Line 5  : END 
+Line 5  : STRUCT ID:Point ID:p SEMICOLON 
+Line 6  : END 
 
 // domain: global
 struct Point{
 	int x;	// size=4, idx=0
 	int y;	// size=4, idx=4
 	};	// size=8
+struct Point p;	// size=8, mem=0x102f3e3a0
 
 
 Parsare OK

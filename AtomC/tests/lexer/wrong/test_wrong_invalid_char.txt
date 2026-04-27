@@ -1,1 +1,1 @@
-error: caracter invalid: @ (64)
+eroare: caracter invalid: @ (64)

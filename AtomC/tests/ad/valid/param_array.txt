@@ -1,0 +1,10 @@
+Line 1  : VOID ID:f LPAR TYPE_INT ID:v LBRACKET INT:10 RBRACKET RPAR LACC 
+Line 2  : RACC 
+Line 3  : END 
+
+// domain: global
+void f(int v[] /*size=8, idx=0*/){
+	}
+
+
+Parsare OK

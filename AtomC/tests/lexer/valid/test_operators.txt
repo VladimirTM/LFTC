@@ -20,4 +20,12 @@ Line 19 : IF LPAR NOT ID:a RPAR ID:b ASSIGN INT:8 SEMICOLON
 Line 20 : RETURN ID:b SEMICOLON 
 Line 21 : RACC 
 Line 22 : END 
-Parsing OK
+
+// domain: global
+int main(){
+	int a;	// size=4, idx=0
+	int b;	// size=4, idx=1
+	}
+
+
+Parsare OK

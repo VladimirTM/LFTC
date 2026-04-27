@@ -15,4 +15,12 @@ Line 14 : ID:d ASSIGN DOUBLE:4.90 SEMICOLON
 Line 15 : RETURN INT:0 SEMICOLON 
 Line 16 : RACC 
 Line 17 : END 
-Parsing OK
+
+// domain: global
+int main(){
+	int a;	// size=4, idx=0
+	double d;	// size=8, idx=1
+	}
+
+
+Parsare OK

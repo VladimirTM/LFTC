@@ -6,4 +6,10 @@ Line 5  : RETURN INT:0 SEMICOLON
 Line 6  : RACC 
 Line 7  : RACC 
 Line 8  : END 
-Parsing OK
+
+// domain: global
+int check(int n /*size=4, idx=0*/){
+	}
+
+
+Parsare OK

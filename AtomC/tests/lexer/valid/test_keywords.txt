@@ -24,4 +24,17 @@ Line 25 : RETURN ID:n SEMICOLON
 Line 26 : RACC 
 Line 27 : RACC 
 Line 28 : END 
-Parsing OK
+
+// domain: global
+struct Point{
+	int x;	// size=4, idx=0
+	double y;	// size=8, idx=4
+	char z;	// size=1, idx=12
+	};	// size=13
+void foo(){
+	}
+int bar(int n /*size=4, idx=0*/){
+	}
+
+
+Parsare OK

@@ -6,4 +6,11 @@ Line 5  : ID:i ASSIGN ID:i ADD INT:1 SEMICOLON
 Line 6  : RACC 
 Line 7  : RACC 
 Line 8  : END 
-Parsing OK
+
+// domain: global
+void count(int n /*size=4, idx=0*/){
+	int i;	// size=4, idx=0
+	}
+
+
+Parsare OK

@@ -22,4 +22,21 @@ Line 24 : ID:i ASSIGN ID:i DIV INT:2 SEMICOLON
 Line 25 : RACC 
 Line 26 : RACC 
 Line 27 : END 
-Parsing OK
+
+// domain: global
+struct Pt{
+	int x;	// size=4, idx=0
+	int y;	// size=4, idx=4
+	};	// size=8
+struct Pt points[10];	// size=80, mem=0x10307e4d0
+double max(double a /*size=8, idx=0*/, double b /*size=8, idx=1*/){
+	}
+int len(char s[] /*size=8, idx=0*/){
+	int i;	// size=4, idx=0
+	}
+void main(){
+	int i;	// size=4, idx=0
+	}
+
+
+Parsare OK

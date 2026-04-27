@@ -1,0 +1,7 @@
+Line 1  : STRUCT ID:S LACC 
+Line 2  : TYPE_INT ID:x SEMICOLON 
+Line 3  : TYPE_INT ID:x SEMICOLON 
+Line 4  : RACC SEMICOLON 
+Line 5  : END 
+
+eroare la linia 4: redefinirea simbolului: x

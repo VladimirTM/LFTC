@@ -1,0 +1,4 @@
+Line 1  : STRUCT ID:S1 ID:x SEMICOLON 
+Line 2  : END 
+
+eroare la linia 1: structura nedefinita: S1

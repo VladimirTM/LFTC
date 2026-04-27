@@ -2,4 +2,11 @@ Line 1  : TYPE_INT ID:x SEMICOLON
 Line 2  : TYPE_DOUBLE ID:y SEMICOLON 
 Line 3  : TYPE_CHAR ID:z SEMICOLON 
 Line 4  : END 
-Parsing OK
+
+// domain: global
+int x;	// size=4, mem=0x100b11c90
+double y;	// size=8, mem=0x100b11d00
+char z;	// size=1, mem=0x100b11d10
+
+
+Parsare OK

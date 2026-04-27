@@ -5,4 +5,12 @@ Line 5  : TYPE_INT ID:bar LPAR RPAR LACC
 Line 6  : RETURN INT:0 SEMICOLON 
 Line 7  : RACC 
 Line 8  : END 
-Parsing OK
+
+// domain: global
+void foo(int a /*size=4, idx=0*/, double b /*size=8, idx=1*/){
+	}
+int bar(){
+	}
+
+
+Parsare OK

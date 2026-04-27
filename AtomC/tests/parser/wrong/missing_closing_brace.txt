@@ -1,4 +1,5 @@
 Line 1  : VOID ID:foo LPAR RPAR LACC 
 Line 2  : TYPE_INT ID:x SEMICOLON 
 Line 3  : END 
-error in line 3: lipseste } la sfarsitul blocului
+
+eroare la linia 3: lipseste } la sfarsitul blocului

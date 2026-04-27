@@ -4,4 +4,5 @@ Line 3  : RETURN SEMICOLON
 Line 4  : RACC 
 Line 5  : RACC 
 Line 6  : END 
-error in line 2: lipseste ( dupa if
+
+eroare la linia 2: lipseste ( dupa if

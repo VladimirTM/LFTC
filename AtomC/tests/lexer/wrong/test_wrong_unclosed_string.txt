@@ -1,1 +1,1 @@
-error: lipseste ghilimeaua de inchidere
+eroare: lipseste ghilimeaua de inchidere

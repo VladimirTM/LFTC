@@ -1,0 +1,4 @@
+Line 1  : TYPE_INT ID:v LBRACKET RBRACKET SEMICOLON 
+Line 2  : END 
+
+eroare la linia 1: o variabila vector trebuie sa aiba o dimensiune specificata

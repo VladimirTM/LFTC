@@ -2,4 +2,5 @@ Line 1  : STRUCT LACC
 Line 2  : TYPE_INT ID:x SEMICOLON 
 Line 3  : RACC SEMICOLON 
 Line 4  : END 
-error in line 1: lipseste numele structurii dupa struct
+
+eroare la linia 1: lipseste numele structurii dupa struct

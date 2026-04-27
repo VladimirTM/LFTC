@@ -7,4 +7,12 @@ Line 7  : ID:print LPAR INT:1 ADD INT:2 RPAR SEMICOLON
 Line 8  : RETURN INT:0 SEMICOLON 
 Line 9  : RACC 
 Line 10 : END 
-Parsing OK
+
+// domain: global
+void print(int x /*size=4, idx=0*/){
+	}
+int main(){
+	}
+
+
+Parsare OK
