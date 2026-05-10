@@ -1,0 +1,7 @@
+Line 1  : TYPE_INT ID:arr LBRACKET INT:10 RBRACKET SEMICOLON 
+Line 2  : VOID ID:f LPAR RPAR LACC 
+Line 3  : ID:arr ASSIGN INT:0 SEMICOLON 
+Line 4  : RACC 
+Line 5  : END 
+
+eroare la linia 3: destinatia atribuirii nu poate fi constanta

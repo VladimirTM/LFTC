@@ -3,7 +3,6 @@ int main()
     int a;
     int b;
     a = 1;
-    b = a.x;
     b = a + 2;
     b = a - 1;
     b = a * 3;

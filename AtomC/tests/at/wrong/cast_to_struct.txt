@@ -1,0 +1,10 @@
+Line 1  : STRUCT ID:S LACC 
+Line 2  : TYPE_INT ID:n SEMICOLON 
+Line 3  : RACC SEMICOLON 
+Line 4  : VOID ID:f LPAR RPAR LACC 
+Line 5  : TYPE_INT ID:x SEMICOLON 
+Line 6  : LPAR STRUCT ID:S RPAR ID:x SEMICOLON 
+Line 7  : RACC 
+Line 8  : END 
+
+eroare la linia 6: nu se poate converti la un tip structura

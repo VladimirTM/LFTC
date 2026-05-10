@@ -1,19 +1,22 @@
-Line 1  : TYPE_INT ID:main LPAR RPAR 
-Line 2  : LACC 
-Line 3  : TYPE_CHAR ID:c SEMICOLON 
-Line 4  : ID:c ASSIGN CHAR:a SEMICOLON 
-Line 5  : ID:c ASSIGN CHAR:Z SEMICOLON 
-Line 6  : ID:c ASSIGN CHAR:9 SEMICOLON 
-Line 7  : ID:c ASSIGN CHAR:# SEMICOLON 
-Line 8  : ID:puts LPAR STRING:hello RPAR SEMICOLON 
-Line 9  : ID:puts LPAR STRING:world RPAR SEMICOLON 
-Line 10 : ID:puts LPAR STRING:AtomC test RPAR SEMICOLON 
-Line 11 : ID:puts LPAR STRING: RPAR SEMICOLON 
-Line 12 : RETURN INT:0 SEMICOLON 
-Line 13 : RACC 
-Line 14 : END 
+Line 1  : VOID ID:puts LPAR TYPE_CHAR ID:s LBRACKET RBRACKET RPAR LACC RACC 
+Line 2  : TYPE_INT ID:main LPAR RPAR 
+Line 3  : LACC 
+Line 4  : TYPE_CHAR ID:c SEMICOLON 
+Line 5  : ID:c ASSIGN CHAR:a SEMICOLON 
+Line 6  : ID:c ASSIGN CHAR:Z SEMICOLON 
+Line 7  : ID:c ASSIGN CHAR:9 SEMICOLON 
+Line 8  : ID:c ASSIGN CHAR:# SEMICOLON 
+Line 9  : ID:puts LPAR STRING:hello RPAR SEMICOLON 
+Line 10 : ID:puts LPAR STRING:world RPAR SEMICOLON 
+Line 11 : ID:puts LPAR STRING:AtomC test RPAR SEMICOLON 
+Line 12 : ID:puts LPAR STRING: RPAR SEMICOLON 
+Line 13 : RETURN INT:0 SEMICOLON 
+Line 14 : RACC 
+Line 15 : END 
 
 // domain: global
+void puts(char s[] /*size=8, idx=0*/){
+	}
 int main(){
 	char c;	// size=1, idx=0
 	}

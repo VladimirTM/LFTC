@@ -1,5 +1,9 @@
 // program de testare a analizorului lexical, v1.1
 
+void puti(int i) {}
+void puts(char s[]) {}
+void putc(char c) {}
+
 int main()
 {
 	int i;

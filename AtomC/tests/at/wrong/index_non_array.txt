@@ -1,0 +1,7 @@
+Line 1  : VOID ID:f LPAR RPAR LACC 
+Line 2  : TYPE_INT ID:x SEMICOLON 
+Line 3  : ID:x LBRACKET INT:0 RBRACKET SEMICOLON 
+Line 4  : RACC 
+Line 5  : END 
+
+eroare la linia 3: doar un vector poate fi indexat

@@ -1,0 +1,11 @@
+Line 1  : STRUCT ID:S LACC 
+Line 2  : TYPE_INT ID:n SEMICOLON 
+Line 3  : RACC SEMICOLON 
+Line 4  : STRUCT ID:S ID:s SEMICOLON 
+Line 5  : VOID ID:f LPAR RPAR LACC 
+Line 6  : TYPE_INT ID:x SEMICOLON 
+Line 7  : ID:x ASSIGN ID:s SEMICOLON 
+Line 8  : RACC 
+Line 9  : END 
+
+eroare la linia 7: sursa atribuirii nu poate fi convertita la destinatie

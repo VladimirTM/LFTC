@@ -1,0 +1,6 @@
+Line 1  : TYPE_INT ID:f LPAR RPAR LACC 
+Line 2  : RETURN SEMICOLON 
+Line 3  : RACC 
+Line 4  : END 
+
+eroare la linia 2: o functie non-void trebuie sa returneze o valoare

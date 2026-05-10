@@ -1,0 +1,9 @@
+Line 1  : STRUCT ID:S LACC 
+Line 2  : TYPE_INT ID:n SEMICOLON 
+Line 3  : RACC SEMICOLON 
+Line 4  : STRUCT ID:S ID:f LPAR RPAR LACC 
+Line 5  : RETURN INT:1 SEMICOLON 
+Line 6  : RACC 
+Line 7  : END 
+
+eroare la linia 5: tipul expresiei returnate nu poate fi convertit la tipul returnat de functie

@@ -1,0 +1,7 @@
+Line 1  : VOID ID:g LPAR RPAR LACC RACC 
+Line 2  : VOID ID:f LPAR RPAR LACC 
+Line 3  : ID:g SEMICOLON 
+Line 4  : RACC 
+Line 5  : END 
+
+eroare la linia 3: o functie poate fi doar apelata

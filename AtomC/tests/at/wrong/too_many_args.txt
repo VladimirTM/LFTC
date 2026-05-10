@@ -1,0 +1,7 @@
+Line 1  : VOID ID:g LPAR TYPE_INT ID:x RPAR LACC RACC 
+Line 2  : VOID ID:f LPAR RPAR LACC 
+Line 3  : ID:g LPAR INT:1 COMMA INT:2 RPAR SEMICOLON 
+Line 4  : RACC 
+Line 5  : END 
+
+eroare la linia 3: prea multe argumente in apelul functiei

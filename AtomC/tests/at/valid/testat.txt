@@ -1,0 +1,32 @@
+Line 1  : STRUCT ID:S LACC 
+Line 2  : TYPE_INT ID:n SEMICOLON 
+Line 3  : TYPE_CHAR ID:text LBRACKET INT:16 RBRACKET SEMICOLON 
+Line 4  : RACC SEMICOLON 
+Line 6  : STRUCT ID:S ID:a SEMICOLON 
+Line 7  : STRUCT ID:S ID:v LBRACKET INT:10 RBRACKET SEMICOLON 
+Line 9  : VOID ID:f LPAR TYPE_CHAR ID:text LBRACKET RBRACKET COMMA TYPE_INT ID:i COMMA TYPE_CHAR ID:ch RPAR LACC 
+Line 10 : ID:text LBRACKET ID:i RBRACKET ASSIGN ID:ch SEMICOLON 
+Line 11 : RACC 
+Line 13 : TYPE_INT ID:h LPAR TYPE_INT ID:x COMMA TYPE_INT ID:y RPAR LACC 
+Line 14 : IF LPAR ID:x GREATER INT:0 AND ID:x LESS ID:y RPAR LACC 
+Line 15 : ID:f LPAR ID:v LBRACKET ID:x RBRACKET DOT ID:text COMMA ID:y COMMA CHAR:# RPAR SEMICOLON 
+Line 16 : RETURN INT:1 SEMICOLON 
+Line 17 : RACC 
+Line 18 : RETURN INT:0 SEMICOLON 
+Line 19 : RACC 
+Line 20 : END 
+
+// domain: global
+struct S{
+	int n;	// size=4, idx=0
+	char text[16];	// size=16, idx=4
+	};	// size=20
+struct S a;	// size=20, mem=0xbc2c08380
+struct S v[10];	// size=200, mem=0x102dfedd0
+void f(char text[] /*size=8, idx=0*/, int i /*size=4, idx=1*/, char ch /*size=1, idx=2*/){
+	}
+int h(int x /*size=4, idx=0*/, int y /*size=4, idx=1*/){
+	}
+
+
+Parsare OK

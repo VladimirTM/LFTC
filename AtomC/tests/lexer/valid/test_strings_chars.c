@@ -1,3 +1,4 @@
+void puts(char s[]) {}
 int main()
 {
     char c;

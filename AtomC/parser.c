@@ -5,6 +5,7 @@
 
 #include "parser.h"
 #include "ad.h"
+#include "at.h"
 #include "utils.h"
 
 Token *iTk;			  // the iterator in the tokens list
@@ -220,7 +221,7 @@ bool fnParam()
 }
 
 bool stm();
-bool expr();
+bool expr(Ret *r);
 
 // stmCompound[in bool newDomain]: LACC ( varDef | stm )* RACC
 bool stmCompound(bool newDomain)
@@ -335,37 +336,76 @@ bool unit()
 	return false;
 }
 
-bool exprPrimary()
+bool exprPrimary(Ret *r)
 {
 	Token *start = iTk;
 	if (consume(ID))
 	{
+		Token *tkName = consumedTk;
+		Symbol *s = findSymbol(tkName->text);
+		if (!s)
+			tkerr("identificator nedefinit: %s", tkName->text);
 		if (consume(LPAR))
 		{
-			if (expr())
+			if (s->kind != SK_FN)
+				tkerr("doar o functie poate fi apelata");
+			Ret rArg;
+			Symbol *param = s->fn.params;
+			if (expr(&rArg))
 			{
+				if (!param)
+					tkerr("prea multe argumente in apelul functiei");
+				if (!convTo(&rArg.type, &param->type))
+					tkerr("in apel, tipul argumentului nu poate fi convertit la tipul parametrului");
+				param = param->next;
 				while (consume(COMMA))
 				{
-					if (!expr())
+					if (!expr(&rArg))
 						tkerr("expresie invalida dupa ,");
+					if (!param)
+						tkerr("prea multe argumente in apelul functiei");
+					if (!convTo(&rArg.type, &param->type))
+						tkerr("in apel, tipul argumentului nu poate fi convertit la tipul parametrului");
+					param = param->next;
 				}
 			}
 			if (!consume(RPAR))
 				tkerr("lipseste ) dupa argumentele functiei");
+			if (param)
+				tkerr("prea putine argumente in apelul functiei");
+			*r = (Ret){s->type, false, true};
+		}
+		else
+		{
+			if (s->kind == SK_FN)
+				tkerr("o functie poate fi doar apelata");
+			*r = (Ret){s->type, true, s->type.n >= 0};
 		}
 		return true;
 	}
 	if (consume(INT))
+	{
+		*r = (Ret){{TB_INT, NULL, -1}, false, true};
 		return true;
+	}
 	if (consume(DOUBLE))
+	{
+		*r = (Ret){{TB_DOUBLE, NULL, -1}, false, true};
 		return true;
+	}
 	if (consume(CHAR))
+	{
+		*r = (Ret){{TB_CHAR, NULL, -1}, false, true};
 		return true;
+	}
 	if (consume(STRING))
+	{
+		*r = (Ret){{TB_CHAR, NULL, 0}, false, true};
 		return true;
+	}
 	if (consume(LPAR))
 	{
-		if (expr())
+		if (expr(r))
 		{
 			if (consume(RPAR))
 				return true;
@@ -376,16 +416,24 @@ bool exprPrimary()
 	return false;
 }
 
-bool exprPostfixPrim()
+bool exprPostfixPrim(Ret *r)
 {
 	if (consume(LBRACKET))
 	{
-		if (expr())
+		Ret idx;
+		if (expr(&idx))
 		{
 			if (!consume(RBRACKET))
 				tkerr("lipseste ] dupa indexul array-ului");
-			exprPostfixPrim();
-			return true;
+			if (r->type.n < 0)
+				tkerr("doar un vector poate fi indexat");
+			Type tInt = {TB_INT, NULL, -1};
+			if (!convTo(&idx.type, &tInt))
+				tkerr("indexul nu este convertibil la int");
+			r->type.n = -1;
+			r->lval = true;
+			r->ct = false;
+			return exprPostfixPrim(r);
 		}
 		tkerr("expresie invalida in indexul array-ului");
 	}
@@ -393,45 +441,52 @@ bool exprPostfixPrim()
 	{
 		if (!consume(ID))
 			tkerr("lipseste numele campului dupa .");
-		exprPostfixPrim();
-		return true;
+		Token *tkName = consumedTk;
+		if (r->type.tb != TB_STRUCT)
+			tkerr("un camp poate fi selectat doar dintr-o structura");
+		Symbol *s = findSymbolInList(r->type.s->structMembers, tkName->text);
+		if (!s)
+			tkerr("structura %s nu are campul %s", r->type.s->name, tkName->text);
+		*r = (Ret){s->type, true, s->type.n >= 0};
+		return exprPostfixPrim(r);
 	}
 	return true; // epsilon
 }
 
-bool exprPostfix()
+bool exprPostfix(Ret *r)
 {
 	Token *start = iTk;
-	if (exprPrimary())
+	if (exprPrimary(r))
 	{
-		return exprPostfixPrim();
+		return exprPostfixPrim(r);
 	}
 	iTk = start;
 	return false;
 }
 
-bool exprUnary()
+bool exprUnary(Ret *r)
 {
 	Token *start = iTk;
-	const char *unaryOp = NULL;
-	if (consume(SUB))
-		unaryOp = "-";
-	else if (consume(NOT))
-		unaryOp = "!";
-	if (unaryOp)
+	if (consume(SUB) || consume(NOT))
 	{
-		if (exprUnary())
+		if (exprUnary(r))
+		{
+			if (!canBeScalar(r))
+				tkerr("operatorul unar - sau ! trebuie sa aiba un operand scalar");
+			r->lval = false;
+			r->ct = true;
 			return true;
-		tkerr("expresie invalida dupa operatorul unar '%s'", unaryOp);
+		}
+		tkerr("expresie invalida dupa operatorul unar");
 	}
-	if (exprPostfix())
+	if (exprPostfix(r))
 		return true;
 	iTk = start;
 	return false;
 }
 
 // exprCast: LPAR typeBase arrayDecl? RPAR exprCast | exprUnary
-bool exprCast()
+bool exprCast(Ret *r)
 {
 	Token *start = iTk;
 	if (consume(LPAR))
@@ -442,20 +497,32 @@ bool exprCast()
 			arrayDecl(&t); // optional
 			if (consume(RPAR))
 			{
-				if (exprCast())
+				Ret op;
+				if (exprCast(&op))
+				{
+					if (t.tb == TB_STRUCT)
+						tkerr("nu se poate converti la un tip structura");
+					if (op.type.tb == TB_STRUCT)
+						tkerr("nu se poate converti o structura");
+					if (op.type.n >= 0 && t.n < 0)
+						tkerr("un vector poate fi convertit doar la alt vector");
+					if (op.type.n < 0 && t.n >= 0)
+						tkerr("un scalar poate fi convertit doar la alt scalar");
+					*r = (Ret){t, false, true};
 					return true;
+				}
 				tkerr("expresie invalida dupa cast");
 			}
 			tkerr("lipseste ) dupa tipul conversiei");
 		}
 	}
 	iTk = start;
-	if (exprUnary())
+	if (exprUnary(r))
 		return true;
 	return false;
 }
 
-bool exprMulPrim()
+bool exprMulPrim(Ret *r)
 {
 	const char *mulOp = NULL;
 	if (consume(MUL))
@@ -464,28 +531,32 @@ bool exprMulPrim()
 		mulOp = "/";
 	if (mulOp)
 	{
-		if (exprCast())
+		Ret right;
+		if (exprCast(&right))
 		{
-			exprMulPrim();
-			return true;
+			Type tDst;
+			if (!arithTypeTo(&r->type, &right.type, &tDst))
+				tkerr("tip invalid de operand pentru * sau /");
+			*r = (Ret){tDst, false, true};
+			return exprMulPrim(r);
 		}
 		tkerr("expresie invalida dupa operatorul '%s'", mulOp);
 	}
 	return true;
 }
 
-bool exprMul()
+bool exprMul(Ret *r)
 {
 	Token *start = iTk;
-	if (exprCast())
+	if (exprCast(r))
 	{
-		return exprMulPrim();
+		return exprMulPrim(r);
 	}
 	iTk = start;
 	return false;
 }
 
-bool exprAddPrim()
+bool exprAddPrim(Ret *r)
 {
 	const char *addOp = NULL;
 	if (consume(ADD))
@@ -494,28 +565,32 @@ bool exprAddPrim()
 		addOp = "-";
 	if (addOp)
 	{
-		if (exprMul())
+		Ret right;
+		if (exprMul(&right))
 		{
-			exprAddPrim();
-			return true;
+			Type tDst;
+			if (!arithTypeTo(&r->type, &right.type, &tDst))
+				tkerr("tip invalid de operand pentru + sau -");
+			*r = (Ret){tDst, false, true};
+			return exprAddPrim(r);
 		}
 		tkerr("expresie invalida dupa operatorul '%s'", addOp);
 	}
 	return true;
 }
 
-bool exprAdd()
+bool exprAdd(Ret *r)
 {
 	Token *start = iTk;
-	if (exprMul())
+	if (exprMul(r))
 	{
-		return exprAddPrim();
+		return exprAddPrim(r);
 	}
 	iTk = start;
 	return false;
 }
 
-bool exprRelPrim()
+bool exprRelPrim(Ret *r)
 {
 	const char *relOp = NULL;
 	if (consume(LESS))
@@ -528,28 +603,32 @@ bool exprRelPrim()
 		relOp = ">=";
 	if (relOp)
 	{
-		if (exprAdd())
+		Ret right;
+		if (exprAdd(&right))
 		{
-			exprRelPrim();
-			return true;
+			Type tDst;
+			if (!arithTypeTo(&r->type, &right.type, &tDst))
+				tkerr("tip invalid de operand pentru <, <=, >, >=");
+			*r = (Ret){{TB_INT, NULL, -1}, false, true};
+			return exprRelPrim(r);
 		}
 		tkerr("expresie invalida dupa operatorul relational '%s'", relOp);
 	}
 	return true;
 }
 
-bool exprRel()
+bool exprRel(Ret *r)
 {
 	Token *start = iTk;
-	if (exprAdd())
+	if (exprAdd(r))
 	{
-		return exprRelPrim();
+		return exprRelPrim(r);
 	}
 	iTk = start;
 	return false;
 }
 
-bool exprEqPrim()
+bool exprEqPrim(Ret *r)
 {
 	const char *eqOp = NULL;
 	if (consume(EQUAL))
@@ -558,98 +637,125 @@ bool exprEqPrim()
 		eqOp = "!=";
 	if (eqOp)
 	{
-		if (exprRel())
+		Ret right;
+		if (exprRel(&right))
 		{
-			exprEqPrim();
-			return true;
+			Type tDst;
+			if (!arithTypeTo(&r->type, &right.type, &tDst))
+				tkerr("tip invalid de operand pentru == sau !=");
+			*r = (Ret){{TB_INT, NULL, -1}, false, true};
+			return exprEqPrim(r);
 		}
 		tkerr("expresie invalida dupa operatorul '%s'", eqOp);
 	}
 	return true;
 }
 
-bool exprEq()
+bool exprEq(Ret *r)
 {
 	Token *start = iTk;
-	if (exprRel())
+	if (exprRel(r))
 	{
-		return exprEqPrim();
+		return exprEqPrim(r);
 	}
 	iTk = start;
 	return false;
 }
 
-bool exprAndPrim()
+bool exprAndPrim(Ret *r)
 {
 	if (consume(AND))
 	{
-		if (exprEq())
+		Ret right;
+		if (exprEq(&right))
 		{
-			exprAndPrim();
-			return true;
+			Type tDst;
+			if (!arithTypeTo(&r->type, &right.type, &tDst))
+				tkerr("tip invalid de operand pentru &&");
+			*r = (Ret){{TB_INT, NULL, -1}, false, true};
+			return exprAndPrim(r);
 		}
 		tkerr("expresie invalida dupa &&");
 	}
 	return true;
 }
 
-bool exprAnd()
+bool exprAnd(Ret *r)
 {
 	Token *start = iTk;
-	if (exprEq())
+	if (exprEq(r))
 	{
-		return exprAndPrim();
+		return exprAndPrim(r);
 	}
 	iTk = start;
 	return false;
 }
 
-bool exprOrPrim()
+bool exprOrPrim(Ret *r)
 {
 	if (consume(OR))
 	{
-		if (exprAnd())
+		Ret right;
+		if (exprAnd(&right))
 		{
-			exprOrPrim();
-			return true;
+			Type tDst;
+			if (!arithTypeTo(&r->type, &right.type, &tDst))
+				tkerr("tip invalid de operand pentru ||");
+			*r = (Ret){{TB_INT, NULL, -1}, false, true};
+			return exprOrPrim(r);
 		}
 		tkerr("expresie invalida dupa ||");
 	}
 	return true;
 }
 
-bool exprOr()
+bool exprOr(Ret *r)
 {
 	Token *start = iTk;
-	if (exprAnd())
+	if (exprAnd(r))
 	{
-		return exprOrPrim();
+		return exprOrPrim(r);
 	}
 	iTk = start;
 	return false;
 }
 
-bool exprAssign()
+bool exprAssign(Ret *r)
 {
 	Token *start = iTk;
-	if (exprUnary())
+	Ret rDst;
+	if (exprUnary(&rDst))
 	{
 		if (consume(ASSIGN))
 		{
-			if (exprAssign())
+			if (exprAssign(r))
+			{
+				if (!rDst.lval)
+					tkerr("destinatia atribuirii trebuie sa fie o valoare stanga");
+				if (rDst.ct)
+					tkerr("destinatia atribuirii nu poate fi constanta");
+				if (!canBeScalar(&rDst))
+					tkerr("destinatia atribuirii trebuie sa fie scalara");
+				if (!canBeScalar(r))
+					tkerr("sursa atribuirii trebuie sa fie scalara");
+				if (!convTo(&r->type, &rDst.type))
+					tkerr("sursa atribuirii nu poate fi convertita la destinatie");
+				r->lval = false;
+				r->ct = true;
 				return true;
+			}
 			tkerr("expresie invalida dupa =");
 		}
 	}
 	iTk = start;
-	if (exprOr())
+	if (exprOr(r))
 		return true;
 	return false;
 }
 
-bool expr()
+bool expr(Ret *r)
 {
-	return exprAssign();
+	return exprAssign(r);
 }
 
 bool stm()
@@ -663,8 +769,11 @@ bool stm()
 	{
 		if (!consume(LPAR))
 			tkerr("lipseste ( dupa if");
-		if (!expr())
+		Ret rCond;
+		if (!expr(&rCond))
 			tkerr("conditie invalida in if");
+		if (!canBeScalar(&rCond))
+			tkerr("conditia if trebuie sa fie o valoare scalara");
 		if (!consume(RPAR))
 			tkerr("lipseste ) dupa conditia if");
 		if (!stm())
@@ -681,8 +790,11 @@ bool stm()
 	{
 		if (!consume(LPAR))
 			tkerr("lipseste ( dupa while");
-		if (!expr())
+		Ret rCond;
+		if (!expr(&rCond))
 			tkerr("conditie invalida in while");
+		if (!canBeScalar(&rCond))
+			tkerr("conditia while trebuie sa fie o valoare scalara");
 		if (!consume(RPAR))
 			tkerr("lipseste ) dupa conditia while");
 		if (!stm())
@@ -692,13 +804,28 @@ bool stm()
 
 	if (consume(RETURN))
 	{
-		expr(); // optional
+		Ret rExpr;
+		if (expr(&rExpr))
+		{
+			if (owner->type.tb == TB_VOID)
+				tkerr("o functie void nu poate returna o valoare");
+			if (!canBeScalar(&rExpr))
+				tkerr("valoarea returnata trebuie sa fie scalara");
+			if (!convTo(&rExpr.type, &owner->type))
+				tkerr("tipul expresiei returnate nu poate fi convertit la tipul returnat de functie");
+		}
+		else
+		{
+			if (owner->type.tb != TB_VOID)
+				tkerr("o functie non-void trebuie sa returneze o valoare");
+		}
 		if (!consume(SEMICOLON))
 			tkerr("lipseste ; dupa return");
 		return true;
 	}
 
-	if (expr())
+	Ret rExpr;
+	if (expr(&rExpr))
 	{
 		if (!consume(SEMICOLON))
 			tkerr("lipseste ; dupa expresie");

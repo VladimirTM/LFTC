@@ -1,0 +1,7 @@
+Line 1  : TYPE_INT ID:x SEMICOLON 
+Line 2  : VOID ID:f LPAR RPAR LACC 
+Line 3  : ID:x LPAR RPAR SEMICOLON 
+Line 4  : RACC 
+Line 5  : END 
+
+eroare la linia 3: doar o functie poate fi apelata

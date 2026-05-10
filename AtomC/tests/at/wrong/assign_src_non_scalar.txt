@@ -1,0 +1,8 @@
+Line 1  : TYPE_INT ID:arr LBRACKET INT:5 RBRACKET SEMICOLON 
+Line 2  : TYPE_INT ID:x SEMICOLON 
+Line 3  : VOID ID:f LPAR RPAR LACC 
+Line 4  : ID:x ASSIGN ID:arr SEMICOLON 
+Line 5  : RACC 
+Line 6  : END 
+
+eroare la linia 4: sursa atribuirii trebuie sa fie scalara

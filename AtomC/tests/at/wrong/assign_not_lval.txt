@@ -1,0 +1,6 @@
+Line 1  : VOID ID:f LPAR RPAR LACC 
+Line 2  : INT:3 ASSIGN INT:1 SEMICOLON 
+Line 3  : RACC 
+Line 4  : END 
+
+eroare la linia 2: destinatia atribuirii trebuie sa fie o valoare stanga

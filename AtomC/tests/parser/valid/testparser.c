@@ -1,3 +1,5 @@
+void puti(int i) {}
+
 struct Pt{
 	int x;
 	int y;

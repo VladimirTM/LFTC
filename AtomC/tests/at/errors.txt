@@ -1,0 +1,420 @@
+AtomC - Erori de Analiza de Tipuri
+===================================
+------------------------------------------------------------------------------
+1. "conditia if trebuie sa fie o valoare scalara"
+   Regula: conditia instructiunii IF nu trebuie sa fie un vector sau void.
+   Declansator:
+   ---
+   int arr[5];
+   void f() {
+       if (arr) {}
+   }
+   ---
+
+------------------------------------------------------------------------------
+2. "conditia while trebuie sa fie o valoare scalara"
+   Regula: conditia instructiunii WHILE nu trebuie sa fie un vector sau void.
+   Declansator:
+   ---
+   int arr[5];
+   void f() {
+       while (arr) {}
+   }
+   ---
+
+------------------------------------------------------------------------------
+3. "o functie void nu poate returna o valoare"
+   Regula: o functie declarata void nu poate returna o expresie.
+   Declansator:
+   ---
+   void f() {
+       return 1;
+   }
+   ---
+
+------------------------------------------------------------------------------
+4. "valoarea returnata trebuie sa fie scalara"
+   Regula: expresia returnata nu trebuie sa fie un vector.
+   Declansator:
+   ---
+   int arr[5];
+   int f() {
+       return arr;
+   }
+   ---
+
+------------------------------------------------------------------------------
+5. "tipul expresiei returnate nu poate fi convertit la tipul returnat de functie"
+   Regula: tipul expresiei returnate trebuie sa fie convertibil la tipul
+   declarat al functiei.
+   Declansator:
+   ---
+   struct S {
+       int n;
+   };
+   struct S f() {
+       return 1;
+   }
+   ---
+
+------------------------------------------------------------------------------
+6. "o functie non-void trebuie sa returneze o valoare"
+   Regula: o functie non-void trebuie sa aiba o expresie de retur.
+   Declansator:
+   ---
+   int f() {
+       return;
+   }
+   ---
+
+------------------------------------------------------------------------------
+7. "destinatia atribuirii trebuie sa fie o valoare stanga"
+   Regula: partea stanga a unei atribuiri trebuie sa aiba o adresa asociata
+   (sa fie lval). Literalii si rezultatele expresiilor sunt rval-uri.
+   Declansator:
+   ---
+   void f() {
+       3 = 1;
+   }
+   ---
+
+------------------------------------------------------------------------------
+8. "destinatia atribuirii nu poate fi constanta"
+   Regula: partea stanga a unei atribuiri nu trebuie sa fie constanta.
+   Variabilele de tip vector sunt marcate constante (ct=true) deoarece
+   adresa lor nu poate fi reatribuita.
+   Declansator:
+   ---
+   int arr[10];
+   void f() {
+       arr = 0;
+   }
+   ---
+
+------------------------------------------------------------------------------
+9. "sursa atribuirii trebuie sa fie scalara"
+    Regula: partea dreapta a unei atribuiri nu trebuie sa fie un vector.
+    Declansator:
+    ---
+    int arr[5];
+    int x;
+    void f() {
+        x = arr;
+    }
+    ---
+
+------------------------------------------------------------------------------
+10. "sursa atribuirii nu poate fi convertita la destinatie"
+    Regula: tipul parii drepte trebuie sa fie convertibil la tipul partii
+    stangi. Structurile pot fi atribuite doar aceluiasi tip de structura.
+    Declansator:
+    ---
+    struct S {
+        int n;
+    };
+    struct S s;
+    void f() {
+        int x;
+        x = s;
+    }
+    ---
+
+------------------------------------------------------------------------------
+11. "tip invalid de operand pentru ||"
+    Regula: ambii operanzi ai || trebuie sa fie scalari si sa nu fie structuri
+    (arithTypeTo esueaza pentru vectori si structuri).
+    Declansator:
+    ---
+    int arr[5];
+    void f() {
+        if (arr || 1) {}
+    }
+    ---
+
+------------------------------------------------------------------------------
+12. "tip invalid de operand pentru &&"
+    Regula: ambii operanzi ai && trebuie sa fie scalari si sa nu fie structuri.
+    Declansator:
+    ---
+    int arr[5];
+    void f() {
+        if (arr && 1) {}
+    }
+    ---
+
+------------------------------------------------------------------------------
+13. "tip invalid de operand pentru == sau !="
+    Regula: ambii operanzi ai == sau != trebuie sa fie scalari si sa nu fie
+    structuri.
+    Declansator:
+    ---
+    int arr[5];
+    void f() {
+        if (arr == 1) {}
+    }
+    ---
+
+------------------------------------------------------------------------------
+14. "tip invalid de operand pentru <, <=, >, >="
+    Regula: ambii operanzi ai operatorilor relationali trebuie sa fie scalari
+    si sa nu fie structuri.
+    Declansator:
+    ---
+    int arr[5];
+    void f() {
+        if (arr < 1) {}
+    }
+    ---
+
+------------------------------------------------------------------------------
+15. "tip invalid de operand pentru + sau -"
+    Regula: ambii operanzi ai + sau - trebuie sa fie scalari si sa nu fie
+    structuri.
+    Declansator:
+    ---
+    int arr[5];
+    void f() {
+        int x;
+        x = arr + 1;
+    }
+    ---
+
+------------------------------------------------------------------------------
+16. "tip invalid de operand pentru * sau /"
+    Regula: ambii operanzi ai * sau / trebuie sa fie scalari si sa nu fie
+    structuri.
+    Declansator:
+    ---
+    int arr[5];
+    void f() {
+        int x;
+        x = arr * 2;
+    }
+    ---
+
+------------------------------------------------------------------------------
+17. "nu se poate converti la un tip structura"
+    Regula: tipul tinta al unei conversii explicite nu poate fi o structura.
+    Declansator:
+    ---
+    struct S {
+        int n;
+    };
+    void f() {
+        int x;
+        (struct S)x;
+    }
+    ---
+
+------------------------------------------------------------------------------
+18. "nu se poate converti o structura"
+    Regula: o valoare de tip structura nu poate fi operandul unei conversii
+    explicite.
+    Declansator:
+    ---
+    struct S {
+        int n;
+    };
+    struct S s;
+    void f() {
+        (int)s;
+    }
+    ---
+
+------------------------------------------------------------------------------
+19. "un vector poate fi convertit doar la alt vector"
+    Regula: un vector poate fi convertit explicit doar la un alt tip vector,
+    nu la un scalar.
+    Declansator:
+    ---
+    int arr[5];
+    void f() {
+        (int)arr;
+    }
+    ---
+
+------------------------------------------------------------------------------
+20. "un scalar poate fi convertit doar la alt scalar"
+    Regula: un scalar poate fi convertit explicit doar la un alt tip scalar,
+    nu la un vector.
+    Declansator:
+    ---
+    void f() {
+        int x;
+        (int[5])x;
+    }
+    ---
+
+------------------------------------------------------------------------------
+21. "operatorul unar - sau ! trebuie sa aiba un operand scalar"
+    Regula: operandul operatorului unar minus sau NOT logic trebuie sa fie
+    scalar (nu vector sau void).
+    Declansator:
+    ---
+    int arr[5];
+    void f() {
+        !arr;
+    }
+    ---
+
+------------------------------------------------------------------------------
+22. "doar un vector poate fi indexat"
+    Regula: operatorul [] poate fi aplicat doar tipurilor vector.
+    Declansator:
+    ---
+    void f() {
+        int x;
+        x[0];
+    }
+    ---
+
+------------------------------------------------------------------------------
+23. "indexul nu este convertibil la int"
+    Regula: expresia din interiorul [] trebuie sa fie convertibila la int.
+    Declansator:
+    ---
+    struct S {
+        int n;
+    };
+    struct S s;
+    int arr[5];
+    void f() {
+        arr[s];
+    }
+    ---
+
+------------------------------------------------------------------------------
+24. "un camp poate fi selectat doar dintr-o structura"
+    Regula: operatorul . poate fi aplicat doar tipurilor structura.
+    Declansator:
+    ---
+    void f() {
+        int x;
+        x.n;
+    }
+    ---
+
+------------------------------------------------------------------------------
+25. "structura %s nu are campul %s"
+    Regula: campul accesat trebuie sa existe ca membru al structurii.
+    Declansator:
+    ---
+    struct S {
+        int n;
+    };
+    struct S s;
+    void f() {
+        s.x;
+    }
+    ---
+
+------------------------------------------------------------------------------
+26. "identificator nedefinit: %s"
+    Regula: orice identificator folosit intr-o expresie trebuie sa fie
+    declarat.
+    Declansator:
+    ---
+    void f() {
+        x;
+    }
+    ---
+
+------------------------------------------------------------------------------
+27. "doar o functie poate fi apelata"
+    Regula: operatorul de apel () poate fi aplicat doar simbolurilor de tip
+    functie.
+    Declansator:
+    ---
+    int x;
+    void f() {
+        x();
+    }
+    ---
+
+------------------------------------------------------------------------------
+28. "o functie poate fi doar apelata"
+    Regula: un simbol de tip functie poate aparea doar intr-un apel de
+    functie, nu ca valoare simpla.
+    Declansator:
+    ---
+    void g() {}
+    void f() {
+        g;
+    }
+    ---
+
+------------------------------------------------------------------------------
+29. "prea multe argumente in apelul functiei"
+    Regula: numarul de argumente la locul apelului nu trebuie sa depaseasca
+    numarul de parametri declarati.
+    Declansator:
+    ---
+    void g(int x) {}
+    void f() {
+        g(1, 2);
+    }
+    ---
+
+------------------------------------------------------------------------------
+30. "in apel, tipul argumentului nu poate fi convertit la tipul parametrului"
+    Regula: tipul fiecarui argument trebuie sa fie convertibil la tipul
+    parametrului corespunzator.
+    Declansator:
+    ---
+    struct S {
+        int n;
+    };
+    struct S s;
+    void g(int x) {}
+    void f() {
+        g(s);
+    }
+    ---
+
+------------------------------------------------------------------------------
+31. "prea putine argumente in apelul functiei"
+    Regula: numarul de argumente la locul apelului nu trebuie sa fie mai mic
+    decat numarul de parametri declarati.
+    Declansator:
+    ---
+    void g(int x, int y) {}
+    void f() {
+        g(1);
+    }
+    ---
+
+==============================================================================
+ERORI TEORETIC INACCESIBILE IN GRAMATICA CURENTA
+==============================================================================
+
+------------------------------------------------------------------------------
+   "destinatia atribuirii trebuie sa fie scalara"
+   Regula: partea stanga a unei atribuiri trebuie sa fie scalara (nu vector
+   sau void).
+
+   De ce este inaccesibila - explicatie din cod:
+
+   In parser.c, functia exprAssign(), verificarile se fac in aceasta ordine:
+
+       if (!rDst.lval)          // (1) trebuie sa fie lval
+           tkerr("destinatia atribuirii trebuie sa fie o valoare stanga");
+       if (rDst.ct)             // (2) nu poate fi constanta
+           tkerr("destinatia atribuirii nu poate fi constanta");
+       if (!canBeScalar(&rDst)) // (3) <- ACEASTA VERIFICARE
+           tkerr("destinatia atribuirii trebuie sa fie scalara");
+
+   canBeScalar() din at.c returneaza false pentru doua cazuri:
+       if (t->n >= 0) return false;    // tip vector (n = lungimea)
+       if (t->tb == TB_VOID) return false; // tip void
+       return true;
+
+   De ce nu se ajunge niciodata la verificarea (3):
+   - Vectorii sunt marcati cu ct=true in AtomC (adresa lor nu poate fi
+     reatribuita), deci esueaza la verificarea (2) inainte de a ajunge la (3).
+   - Tipurile void nu pot fi lval-uri, deci esueaza la verificarea (1).
+   - Orice alt tip (int, char, double, struct) trece canBeScalar().
+
+   Nu exista niciun tip care sa treaca (1) si (2) si sa esueze la (3).
+   Regula este prezenta in specificatie pentru completitudine formala.
+
+   Declansator: N/A

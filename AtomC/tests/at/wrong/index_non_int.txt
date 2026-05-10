@@ -1,0 +1,11 @@
+Line 1  : STRUCT ID:S LACC 
+Line 2  : TYPE_INT ID:n SEMICOLON 
+Line 3  : RACC SEMICOLON 
+Line 4  : STRUCT ID:S ID:s SEMICOLON 
+Line 5  : TYPE_INT ID:arr LBRACKET INT:5 RBRACKET SEMICOLON 
+Line 6  : VOID ID:f LPAR RPAR LACC 
+Line 7  : ID:arr LBRACKET ID:s RBRACKET SEMICOLON 
+Line 8  : RACC 
+Line 9  : END 
+
+eroare la linia 7: indexul nu este convertibil la int

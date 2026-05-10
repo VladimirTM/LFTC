@@ -1,0 +1,6 @@
+Line 1  : VOID ID:f LPAR RPAR LACC 
+Line 2  : ID:x SEMICOLON 
+Line 3  : RACC 
+Line 4  : END 
+
+eroare la linia 2: identificator nedefinit: x

@@ -1,0 +1,7 @@
+Line 1  : VOID ID:f LPAR RPAR LACC 
+Line 2  : TYPE_INT ID:x SEMICOLON 
+Line 3  : LPAR TYPE_INT LBRACKET INT:5 RBRACKET RPAR ID:x SEMICOLON 
+Line 4  : RACC 
+Line 5  : END 
+
+eroare la linia 3: un scalar poate fi convertit doar la alt scalar

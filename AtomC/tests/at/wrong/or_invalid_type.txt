@@ -1,0 +1,7 @@
+Line 1  : TYPE_INT ID:arr LBRACKET INT:5 RBRACKET SEMICOLON 
+Line 2  : VOID ID:f LPAR RPAR LACC 
+Line 3  : IF LPAR ID:arr OR INT:1 RPAR LACC RACC 
+Line 4  : RACC 
+Line 5  : END 
+
+eroare la linia 3: tip invalid de operand pentru ||
