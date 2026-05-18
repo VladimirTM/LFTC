@@ -56,5 +56,23 @@ run_suite "AD wrong"     ./tests/ad/wrong     "1"
 run_suite "AT valid"     ./tests/at/valid     "0"
 run_suite "AT wrong"     ./tests/at/wrong     "1"
 
+echo "=== VM ==="
+if [ ! -f "./main_mv" ]; then
+    echo "  SKIP: main_mv not compiled – run: gcc main_mv.c vm.c ad.c at.c utils.c lexer.c parser.c -o main_mv"
+else
+    normalize_vm() { sed 's/0x[0-9a-fA-F]*/0xADDR/g'; }
+    actual=$(./main_mv | normalize_vm)
+    expected_content=$(cat ./tests/vm/rezultat-executie-both.txt)
+    if [ "$actual" = "$expected_content" ]; then
+        echo "  PASS: both programs"
+        PASS=$((PASS + 1))
+    else
+        echo "  FAIL: both programs"
+        diff <(echo "$expected_content") <(echo "$actual") | sed 's/^/    /'
+        FAIL=$((FAIL + 1))
+    fi
+fi
+echo ""
+
 echo "Results: $PASS passed, $FAIL failed"
 [ $FAIL -eq 0 ] && exit 0 || exit 1

@@ -4,6 +4,7 @@
 #include "parser.h"
 #include "ad.h"
 #include "utils.h"
+#include "vm.h"
 
 int main(int argc, char **argv)
 {
@@ -19,11 +20,14 @@ int main(int argc, char **argv)
     fflush(stdout);
 
     pushDomain();        // create global domain before parsing
+    vmInit();            // initialize the virtual machine
     parse(tokens);
     showDomain(symTable, "global");  // print the global symbol table
+    Instr *testCode=genDoubleFTestProgram(); // generate a test program
+    run(testCode);       // run the test program on the virtual machine
     dropDomain();        // clean up
 
-    printf("Parsare OK\n");
+    printf("\n\nParsare OK\n");
     free(source);
     freeTokens(tokens);
     return 0;

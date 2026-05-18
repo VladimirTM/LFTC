@@ -50,7 +50,7 @@ void pushi(int i){
 
 int popi(){
 	if(SP==stack-1)err("incercare de a extrage din stiva goala");
-	return SP--->i;
+	return (SP--)->i;
 	}
 
 void pushp(void *p){
@@ -60,16 +60,32 @@ void pushp(void *p){
 
 void *popp(){
 	if(SP==stack-1)err("incercare de a extrage din stiva goala");
-	return SP--->p;
+	return (SP--)->p;
+	}
+
+void pushf(double f){
+	if(SP+1==stack+10000)err("incercare de a adauga in stiva plina");
+	(++SP)->f=f;
+	}
+
+double popf(){
+	if(SP==stack-1)err("incercare de a extrage din stiva goala");
+	return (SP--)->f;
 	}
 
 void put_i(){
 	printf("=> %d",popi());
 	}
 
+void put_d(){
+	printf("=> %g",popf());
+	}
+
 void vmInit(){
 	Symbol *fn=addExtFn("put_i",put_i,(Type){TB_VOID,NULL,-1});
 	addFnParam(fn,"i",(Type){TB_INT,NULL,-1});
+	Symbol *fnd=addExtFn("put_d",put_d,(Type){TB_VOID,NULL,-1});
+	addFnParam(fnd,"d",(Type){TB_DOUBLE,NULL,-1});
 	}
 
 void run(Instr *IP){
@@ -148,6 +164,25 @@ void run(Instr *IP){
 				printf("LESS.i\t// %d<%d -> %d",iBefore,iTop,iBefore<iTop);
 				IP=IP->next;
 				break;
+			case OP_PUSH_F:
+				printf("PUSH.f\t%g",IP->arg.f);
+				pushf(IP->arg.f);
+				IP=IP->next;
+				break;
+			case OP_ADD_F:{
+				double fTop=popf(),fBefore=popf();
+				pushf(fBefore+fTop);
+				printf("ADD.f\t// %g+%g -> %g",fBefore,fTop,fBefore+fTop);
+				IP=IP->next;
+				break;
+				}
+			case OP_LESS_F:{
+				double fTop=popf(),fBefore=popf();
+				pushi(fBefore<fTop);
+				printf("LESS.f\t// %g<%g -> %d",fBefore,fTop,fBefore<fTop);
+				IP=IP->next;
+				break;
+				}
 			default:err("run: instructiune neimplementata: %d",IP->op);
 			}
 		putchar('\n');
@@ -189,6 +224,47 @@ Instr *genTestProgram(){
 	addInstr(&code,OP_ADD_I);
 	addInstrWithInt(&code,OP_FPSTORE,1);
 	// } ( the next iteration)
+	addInstr(&code,OP_JMP)->arg.instr=whilePos;
+	// returns from function
+	jfAfter->arg.instr=addInstrWithInt(&code,OP_RET_VOID,1);
+	return code;
+	}
+
+/* The program implements the following AtomC source code:
+f(2.0);
+void f(double n){		// stack frame: n[-2] ret[-1] oldFP[0] i[1]
+	double i=0.0;
+	while(i<n){
+		put_d(i);
+		i=i+0.5;
+		}
+	}
+*/
+Instr *genDoubleFTestProgram(){
+	Instr *code=NULL;
+	addInstrWithDouble(&code,OP_PUSH_F,2.0);
+	Instr *callPos=addInstr(&code,OP_CALL);
+	addInstr(&code,OP_HALT);
+	callPos->arg.instr=addInstrWithInt(&code,OP_ENTER,1);
+	// double i=0.0;
+	addInstrWithDouble(&code,OP_PUSH_F,0.0);
+	addInstrWithInt(&code,OP_FPSTORE,1);
+	// while(i<n){
+	Instr *whilePos=addInstrWithInt(&code,OP_FPLOAD,1);
+	addInstrWithInt(&code,OP_FPLOAD,-2);
+	addInstr(&code,OP_LESS_F);
+	Instr *jfAfter=addInstr(&code,OP_JF);
+	// put_d(i);
+	addInstrWithInt(&code,OP_FPLOAD,1);
+	Symbol *s=findSymbol("put_d");
+	if(!s)err("nedefinit: put_d");
+	addInstr(&code,OP_CALL_EXT)->arg.extFnPtr=s->fn.extFnPtr;
+	// i=i+0.5;
+	addInstrWithInt(&code,OP_FPLOAD,1);
+	addInstrWithDouble(&code,OP_PUSH_F,0.5);
+	addInstr(&code,OP_ADD_F);
+	addInstrWithInt(&code,OP_FPSTORE,1);
+	// } (next iteration)
 	addInstr(&code,OP_JMP)->arg.instr=whilePos;
 	// returns from function
 	jfAfter->arg.instr=addInstrWithInt(&code,OP_RET_VOID,1);
