@@ -23,8 +23,12 @@ int main(int argc, char **argv)
     vmInit();            // initialize the virtual machine
     parse(tokens);
     showDomain(symTable, "global");  // print the global symbol table
-    Instr *testCode=genDoubleFTestProgram(); // generate a test program
-    run(testCode);       // run the test program on the virtual machine
+    Symbol *symMain=findSymbolInDomain(symTable,"main");
+    if(!symMain)err("missing main function");
+    Instr *entryCode=NULL;
+    addInstr(&entryCode,OP_CALL)->arg.instr=symMain->fn.instr;
+    addInstr(&entryCode,OP_HALT);
+    run(entryCode);
     dropDomain();        // clean up
 
     printf("\n\nParsare OK\n");
